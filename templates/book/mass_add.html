@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<form class="well form-inline" action="/book/mass_add/" method="post">
+    {% csrf_token %}
+    <legend>Mass Add Books</legend>
+    <label>ISBN #:</label>
+    <input type="text" name="isbn" autofocus="autofocus" />
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+{% if status %}
+    <p>{{ status }}</p>
+{% endif %}
+
+
+{% endblock %}
+

@@ -1,0 +1,9 @@
+Django==1.4.1
+MySQL-python==1.2.3
+South==0.7.6
+bottlenose==0.4.0
+distribute==0.6.10
+django-bootstrap-toolkit==2.5.6
+lxml==3.0alpha2
+python-amazon-simple-product-api==1.1.2
+wsgiref==0.1.2

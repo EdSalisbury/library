@@ -1,0 +1,5 @@
+[
+    { "model": "book.format", "pk": 1, "fields" : { "label" : "paperback" } },
+    { "model": "book.format", "pk": 2, "fields" : { "label" : "hardcover" } },
+    { "model": "book.format", "pk": 3, "fields" : { "label" : "e-book" } }
+]

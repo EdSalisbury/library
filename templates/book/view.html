@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if img_url %}
+<img src='{{ img_url }}'>
+{% endif %}
+
+<h1>{{ book.title }}</h1>
+<h2>by {{ book.author.name }}</h2>
+
+<p>{{ book.description }}</p>
+
+
+{% endblock %}
+
