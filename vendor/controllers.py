@@ -12,9 +12,6 @@ class AmazonController:
 
         try:
             product = self.amazon.lookup(ItemId = item_id, IdType = id_type, SearchIndex = search_index)
-            if type(product) == 'list':
-                return product[0]
-            else:
-                return product
+            return product
         except:
             return None

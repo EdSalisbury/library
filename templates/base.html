@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Hoarderz</title>
+    <title>Ed's Family Library</title>
     <meta name="description" content="">
     <meta name="author" content="Ed Salisbury">
     {% bootstrap_stylesheet_tag %}
@@ -21,20 +21,24 @@
 </head>
 
 <body>
-<div class="navbar navbar-fixed-top">
+    <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
-        <div class="container">
-            <a class="brand" href="/">Hoarderz</a>
-            <ul class="nav">
-                <li><a href="/book/" class="">Books</a></li>
+        <div class="container pull-left" style="padding-left: 10px">
+            <a class="brand" href="/">Ed's Family Library</a>
+            <form class="navbar-search pull-right">
+                <input type="text" class="search-query" placeholder="Search">
+            </form>
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="/book/" class="">Books</a></li>
+                <li><a href="/book/" class="">Movies</a></li>
+                <li><a href="/book/" class="">Music</a></li>
+                <li><a href="/book/" class="">Games</a></li>
             </ul>
         </div>
     </div>
 </div>
 
-<div class="container">
-    {% block content %}{% endblock %}
-</div>
+{% block content %}{% endblock %}
 
 </body>
 </html>

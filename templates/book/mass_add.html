@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class='container'>
 
 <form class="well form-inline" action="/book/mass_add/" method="post">
     {% csrf_token %}
@@ -13,6 +14,7 @@
 {% if status %}
     <p>{{ status }}</p>
 {% endif %}
+</div>
 
 
 {% endblock %}

@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="container-fluid">
 <h1>Books
 <a class="btn btn-small btn-primary" href="/book/add/"><i class="icon-plus-sign icon-white"></i> Add</a>
 <a class="btn btn-small btn-primary" href="/book/mass_add/"><i class="icon-plus-sign icon-white"></i> Mass Add</a>
@@ -11,18 +12,27 @@
     <thead>
     <tr>
         <th>Title</th>
+        <th>Series/Book</th>
+        <th>Author</th>
     </tr>
     </thead>
     <tbody>
     {% for book in book_list %}
         <tr>
             <td><a href="/book/{{ book.id }}/">{{ book.title }}</a></td>
+            {% if book.series %}
+                <td>{{ book.series }}, book {{ book.series_number }}</td>
+            {% else %}
+                <td>&nbsp;</td>
+            {% endif %}
+            <td>{{ book.author }}</td>
         </tr>
     {% endfor %}
     </tbody>
 {% else %}
     <p>No books exist in your library.</p>
 {% endif %}
+</div>
 
 {% endblock %}
 

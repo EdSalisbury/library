@@ -9,6 +9,7 @@ File types #
 ###############
 logs/
 env/
+media/
 
 # Specific files #
 ##################

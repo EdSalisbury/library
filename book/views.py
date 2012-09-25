@@ -5,14 +5,22 @@ from django.conf import settings
 from book.models import *
 from vendor.controllers import AmazonController
 import urllib
+import HTMLParser
+from types import *
+import re
 
 def list(request):
-    book_list = Book.objects.all()
+    book_list = Book.objects.all().order_by('title').order_by('publication_year').order_by('author__name')
     return render_to_response('book/list.html', {'book_list': book_list})
+
+def catalog(request):
+    book_list = Book.objects.all()
+    return render_to_response('book/catalog.html', {'book_list': book_list})
 
 def view(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
-    img_url = settings.MEDIA_URL + "/book/" + str(book.id) + ".jpg"
+    img_url = settings.MEDIA_URL + "book/" + str(book.id) + ".jpg"
+    book.description = book.description.replace("\\'", "'")
     return render_to_response('book/view.html', {'book': book, 'img_url': img_url})
 
 def add(request):
@@ -32,10 +40,14 @@ def mass_add(request):
         if len(isbn) == 10:
             product = amazon.lookup(isbn)
         elif len(isbn) == 13:
-            product = amazon.lookup(isbn, 'EAN', 'Books')
-
+            product = amazon.lookup(isbn, 'ISBN', 'Books')
+#        elif len(isbn) == 12:
+#            product = amazon.lookup(isbn, 'UPC', 'Books')
 
         if product:
+            if type(product) is ListType:
+                product = product[0]
+
             author_name = product.item.ItemAttributes.Author
             binding = product.item.ItemAttributes.Binding
             manufacturer = product.item.ItemAttributes.Manufacturer
@@ -65,8 +77,9 @@ def mass_add(request):
             desc = ""
 
             if len(product.item.EditorialReviews):
-                review = product.item.EditorialReviews[0]['EditorialReview']
-                desc = review['Content']
+                desc = product.item.EditorialReviews[0].EditorialReview['Content']
+                desc = unicode(desc).encode('utf-8')
+                desc = re.sub('\'', '\\\'', desc)
 
             book = Book.objects.create(
                 title = product.item.ItemAttributes.Title,
