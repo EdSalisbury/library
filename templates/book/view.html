@@ -1,6 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="navbar navbar-inverse navbar-fixed-bottom">
+    <div class='navbar-inner' style='padding-top: 5px; padding-right: 10px'>
+        <div class='pull-right'>
+            <a class="btn btn-small btn-primary" href="/books/{{ book.id }}/edit"><i class="icon-edit icon-white"></i> Edit</a>
+        </div>
+    </div>
+</div>
+
 
 <div class="container-fluid">
     <div class="row-fluid">

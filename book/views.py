@@ -11,23 +11,24 @@ import re
 
 def list(request):
     book_list = Book.objects.all().order_by('title').order_by('publication_year').order_by('author__name')
-    return render_to_response('book/list.html', {'book_list': book_list})
+    return render_to_response('book/list.html', {'book_list': book_list, 'tab': 'books'})
 
 def catalog(request):
     book_list = Book.objects.all()
-    return render_to_response('book/catalog.html', {'book_list': book_list})
+    return render_to_response('book/catalog.html', {'book_list': book_list, 'tab': 'books'})
 
 def view(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
     img_url = settings.MEDIA_URL + "book/" + str(book.id) + ".jpg"
     book.description = book.description.replace("\\'", "'")
-    return render_to_response('book/view.html', {'book': book, 'img_url': img_url})
+    return render_to_response('book/view.html', {'book': book, 'img_url': img_url, 'tab': 'books'})
 
 def add(request):
-    return render_to_response('book/add.html')
+    return render_to_response('book/add.html', {'tab': 'books'})
 
 def mass_add(request):
     c = {}
+    c['tab'] = 'books'
     c.update(csrf(request))
 
     if request.method == 'POST':

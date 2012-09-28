@@ -1,0 +1,39 @@
+.navbar-inner
+{
+    background-image: -webkit-linear-gradient(top, #a0cae3, #0072b5);
+    line-height: 16px;
+}
+
+.navbar .nav li a, .navbar .brand
+{
+    color: #333;
+    text-shadow: 1px 1px 0 #0072b5;
+}
+
+.nav-tabs
+{
+    border-bottom: 0
+}
+
+/* Twitter bootstrap overrides */
+[class^="icon-"]
+{
+    width: inherit;
+    height: inherit;
+    line-height: inherit;
+    background: none;
+    margin-top: 0px;
+    vertical-align: inherit;
+}
+
+h1
+{
+    font-size: 140%;
+    line-height: 145%;
+}
+
+h2
+{
+    font-size: 120%;
+    line-height: 125%;
+}
