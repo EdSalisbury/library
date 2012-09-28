@@ -6,6 +6,12 @@ class Author(models.Model):
     def __unicode__(self):
         return self.name
 
+class Condition(models.Model):
+    label = models.CharField(max_length = 16)
+
+    def __unicode__(self):
+        return self.label
+
 class Format(models.Model):
     label = models.CharField(max_length = 32)
 
@@ -31,6 +37,7 @@ class Series(models.Model):
 class Book(models.Model):
     title = models.CharField(max_length = 128)
     author = models.ForeignKey(Author)
+    condition = models.ForeignKey(Condition)
     format = models.ForeignKey(Format)
     publisher = models.ForeignKey(Publisher)
     series = models.ForeignKey(Series, null = True, blank = True)

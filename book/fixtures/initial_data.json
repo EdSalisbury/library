@@ -1,5 +1,12 @@
 [
     { "model": "book.format", "pk": 1, "fields" : { "label" : "paperback" } },
     { "model": "book.format", "pk": 2, "fields" : { "label" : "hardcover" } },
-    { "model": "book.format", "pk": 3, "fields" : { "label" : "e-book" } }
+    { "model": "book.format", "pk": 3, "fields" : { "label" : "e-book" } },
+
+    { "model": "book.condition", "pk": 1, "fields" : { "label" : "new" } },
+    { "model": "book.condition", "pk": 2, "fields" : { "label" : "fine" } },
+    { "model": "book.condition", "pk": 3, "fields" : { "label" : "very good" } },
+    { "model": "book.condition", "pk": 4, "fields" : { "label" : "good" } },
+    { "model": "book.condition", "pk": 5, "fields" : { "label" : "fair" } },
+    { "model": "book.condition", "pk": 6, "fields" : { "label" : "poor" } }
 ]
