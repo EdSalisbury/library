@@ -44,9 +44,13 @@
         <div class="navbar navbar-inverse navbar-fixed-bottom">
             <div class='navbar-inner' style='padding-top: 5px; padding-right: 10px'>
                 <div class='pull-right'>
-                    {% if book %}
-                        <a class="btn btn-small btn-primary" href="/admin/book/book/{{ book.id }}"><i class="icon-edit icon-white"></i> Edit</a>
+                    {% if action == "view" %}
+                        <a class="btn btn-small btn-primary" href="/books/{{ book.id }}/edit"><i class="icon-edit icon-white"></i> Edit</a>
                     {% endif %}
+                    {% if action == "edit" %}
+                        <a class="btn btn-small btn-primary" href="/books/{{ book.id }}"><i class="icon-eye-open icon-white"></i> View</a>
+                    {% endif %}
+
                     <a class="btn btn-small btn-primary" href="/books/add"><i class="icon-plus icon-white"></i> Add</a>
                     <a class="btn btn-small btn-primary" href="/books/mass_add"><i class="icon-barcode icon-white"></i>&nbsp;  Mass Add</a>
                 </div>

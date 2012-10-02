@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<div class="container-fluid">
+<div class="container well">
     <div class="row-fluid">
         <div class="span4">
             {% if img_url %}
@@ -23,6 +23,7 @@
             <h3>Binding: {{ book.format.label }}</h3>
             <h3>Condition: {{ book.condition.label }}</h3>
             <h3>Publisher: {{ book.publisher.name }}</h3>
+            <h3>ISBN: {{ book.isbn }}</h3>
             <div>
                 {% autoescape off %}
                 {{ book.description }}
