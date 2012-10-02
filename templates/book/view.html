@@ -10,8 +10,19 @@
             {% endif %}
         </div>
         <div class="span8">
-            <h1>{{ book.title }}</h1>
+            <h1>{{ book.title }}
+            {% if book.series %}
+                {% if book.series_number %}
+                    ({{ book.series.name}}, book {{ book.series_number }})</h1>
+                {% else %}
+                    ({{ book.series.name }})
+                {% endif %}
+            {% endif %}
+            </h1>
             <h2>by {{ book.author.name }}</h2>
+            <h3>Binding: {{ book.format.label }}</h3>
+            <h3>Condition: {{ book.condition.label }}</h3>
+            <h3>Publisher: {{ book.publisher.name }}</h3>
             <div>
                 {% autoescape off %}
                 {{ book.description }}

@@ -39,6 +39,12 @@ h1
 
 h2
 {
+    font-size: 130%;
+    line-height: 135%;
+}
+
+h3
+{
     font-size: 120%;
     line-height: 125%;
 }
