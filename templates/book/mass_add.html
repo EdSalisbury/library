@@ -3,7 +3,7 @@
 {% block content %}
 <div class='container'>
 
-<form class="well form-inline" action="/book/mass_add/" method="post">
+<form class="well form-inline" action="/books/mass_add" method="post">
     {% csrf_token %}
     <legend>Mass Add Books</legend>
     <label>ISBN #:</label>
@@ -11,8 +11,12 @@
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
-{% if status %}
-    <p>{{ status }}</p>
+{% if book %}
+    <p><a href="/books/{{ book.id }}">{{ book.title }}</a> by {{ book.author.name }} has been added successfully.</p>
+{% endif %}
+
+{% if error %}
+    <p>{{ error }}</p>
 {% endif %}
 </div>
 

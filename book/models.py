@@ -37,8 +37,9 @@ class Series(models.Model):
 class Book(models.Model):
     title = models.CharField(max_length = 128)
     author = models.ForeignKey(Author)
-    condition = models.ForeignKey(Condition)
+    condition = models.ForeignKey(Condition, default = 7) # unknown
     format = models.ForeignKey(Format)
+    location = models.CharField(max_length = 16, blank = True)
     publisher = models.ForeignKey(Publisher)
     series = models.ForeignKey(Series, null = True, blank = True)
     series_number = models.CharField(max_length = 5, blank = True)

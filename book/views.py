@@ -8,6 +8,7 @@ import urllib
 import HTMLParser
 from types import *
 import re
+import inspect
 
 def list(request):
     book_list = Book.objects.all().order_by('title').order_by('publication_year').order_by('author__name')
@@ -26,6 +27,57 @@ def view(request, book_id):
 def add(request):
     return render_to_response('book/add.html', {'tab': 'books'})
 
+def get_details(product):
+
+    details = {}
+
+    # Get publication year
+    details['year'] = str(product.item.ItemAttributes.PublicationDate)[:4]
+
+    # Get title
+    title = product.item.ItemAttributes.Title
+    title = unicode(title).encode('utf-8')
+    details['title'] = re.sub('\'', '\\\'', title)
+
+    # Get/create Publisher object
+    manufacturer = product.item.ItemAttributes.Manufacturer
+    try:
+        details['publisher'] = Publisher.objects.get(name = manufacturer)
+    except Publisher.DoesNotExist:
+        details['publisher'] = Publisher.objects.create(
+            name = manufacturer
+        )
+
+    # Get/create Author object
+    author_name = product.item.ItemAttributes.Author
+    author_name = unicode(author_name).encode('utf-8')
+    author_name = re.sub('\'', '\\\'', author_name)
+    try:
+        details['author'] = Author.objects.get(name = author_name)
+    except Author.DoesNotExist:
+        details['author'] = Author.objects.create(
+        name = author_name
+    )
+
+    # Get/create Format object
+    binding = product.item.ItemAttributes.Binding
+    try:
+        details['format'] = Format.objects.get(label = binding)
+    except Format.DoesNotExist:
+        details['format'] = Format.objects.create(
+            label = binding
+        )
+
+    # Get item description
+    try:
+        desc = product.item.EditorialReviews[0].EditorialReview['Content']
+        desc = unicode(desc).encode('utf-8')
+        details['desc'] = re.sub('\'', '\\\'', desc)
+    except AttributeError:
+        details['desc'] = ""
+
+    return details
+
 def mass_add(request):
     c = {}
     c['tab'] = 'books'
@@ -37,66 +89,53 @@ def mass_add(request):
         amazon = AmazonController()
 
         product = None
+        added = False
 
         if len(isbn) == 10:
             product = amazon.lookup(isbn)
         elif len(isbn) == 13:
             product = amazon.lookup(isbn, 'ISBN', 'Books')
-#        elif len(isbn) == 12:
-#            product = amazon.lookup(isbn, 'UPC', 'Books')
 
         if product:
             if type(product) is ListType:
-                product = product[0]
+                product_list = product
+            else:
+                product_list = []
+                product_list.append(product)
 
-            author_name = product.item.ItemAttributes.Author
-            binding = product.item.ItemAttributes.Binding
-            manufacturer = product.item.ItemAttributes.Manufacturer
-            year = str(product.item.ItemAttributes.PublicationDate)[:4]
+            for product in product_list:
+                try:
+                    product.item.LargeImage['URL']
+                except AttributeError:
+                    continue
 
-            try:
-                publisher = Publisher.objects.get(name = manufacturer)
-            except Publisher.DoesNotExist:
-                publisher = Publisher.objects.create(
-                    name = manufacturer
-                )
+                details = get_details(product)
+                if not details['desc']:
+                    continue
 
-            try:
-                author = Author.objects.get(name = author_name)
-            except Author.DoesNotExist:
-                author = Author.objects.create(
-                name = author_name
-            )
+                book = Book.objects.create(
+                    title = details['title'],
+                    author = details['author'],
+                    format = details['format'],
+                    publisher = details['publisher'],
+                    publication_year = details['year'],
+                    isbn = isbn,
+                    description = details['desc'],
+                    )
+                if book:
+                    added = True
 
-            try:
-                format = Format.objects.get(label = binding)
-            except Format.DoesNotExist:
-                format = Format.objects.create(
-                    label = binding
-                )
+                # Get image
+                try:
+                    image_url = str(product.item.LargeImage['URL'])
+                    urllib.urlretrieve(image_url, settings.MEDIA_ROOT + "/book/" + str(book.id) + ".jpg")
+                except AttributeError:
+                    pass
 
-            desc = ""
+                c['book'] = book
+                return render_to_response('book/mass_add.html', c)
 
-            if len(product.item.EditorialReviews):
-                desc = product.item.EditorialReviews[0].EditorialReview['Content']
-                desc = unicode(desc).encode('utf-8')
-                desc = re.sub('\'', '\\\'', desc)
-
-            book = Book.objects.create(
-                title = product.item.ItemAttributes.Title,
-                author = author,
-                format = format,
-                publisher = publisher,
-                publication_year = year,
-                isbn = product.item.ItemAttributes.ISBN,
-                description = desc,
-                )
-
-            image_url = str(product.item.LargeImage['URL'])
-            urllib.urlretrieve(image_url, settings.MEDIA_ROOT + "/book/" + str(book.id) + ".jpg")
-
-            c['status'] = product.item.ItemAttributes.Title + " has been added successfully."
         else:
-            c['status'] = "Unable to find " + isbn + "."
+            c['error'] = "Unable to find ISBN %s." % (isbn)
 
     return render_to_response('book/mass_add.html', c)

@@ -7,7 +7,7 @@ File types #
 
 # Directories #
 ###############
-logs/
+log/
 env/
 media/
 

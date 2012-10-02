@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Ed's Family Library</title>
+    <title>Library</title>
     <meta name="description" content="">
     <meta name="author" content="Ed Salisbury">
     {% bootstrap_stylesheet_tag %}
@@ -26,25 +26,33 @@
 <body>
     <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
-            <a class="brand" href="/" style='padding-left: 30px'>Ed's Family Library</a>
+            <a class="brand" href="/"><i class='icon-home'></i> My Library</a>
             <form class="navbar-search pull-right" style='padding-right: 10px'>
                 <input type="text" class="search-query" placeholder="Search">
             </form>
             <ul class="nav nav-tabs">
-                {% if not tab %}
-                    <li class="active"><a href="/" class="">Home</a></li>
-                {% else %}
-                    <li><a href="/" class="">Home</a></li>
-                {% endif %}
-
                 {% if tab == 'books' %}
-                    <li class="active"><a href="/books" class="">Books</a></li>
+                    <li class="active"><a href="/books"><i class='icon-book'></i> Books</a></li>
                 {% else %}
-                    <li><a href="/books" class="">Books</a></li>
+                    <li><a href="/books"><i class='icon-book'></i> Books</a></li>
                 {% endif %}
             </ul>
         </div>
     </div>
+
+    {% if tab == 'books' %}
+        <div class="navbar navbar-inverse navbar-fixed-bottom">
+            <div class='navbar-inner' style='padding-top: 5px; padding-right: 10px'>
+                <div class='pull-right'>
+                    {% if book %}
+                        <a class="btn btn-small btn-primary" href="/admin/book/book/{{ book.id }}"><i class="icon-edit icon-white"></i> Edit</a>
+                    {% endif %}
+                    <a class="btn btn-small btn-primary" href="/books/add"><i class="icon-plus icon-white"></i> Add</a>
+                    <a class="btn btn-small btn-primary" href="/books/mass_add"><i class="icon-barcode icon-white"></i>&nbsp;  Mass Add</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
 
     {% block content %}{% endblock %}
 

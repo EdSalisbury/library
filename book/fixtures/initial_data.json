@@ -8,5 +8,6 @@
     { "model": "book.condition", "pk": 3, "fields" : { "label" : "very good" } },
     { "model": "book.condition", "pk": 4, "fields" : { "label" : "good" } },
     { "model": "book.condition", "pk": 5, "fields" : { "label" : "fair" } },
-    { "model": "book.condition", "pk": 6, "fields" : { "label" : "poor" } }
+    { "model": "book.condition", "pk": 6, "fields" : { "label" : "poor" } },
+    { "model": "book.condition", "pk": 7, "fields" : { "label" : "unknown" } }
 ]

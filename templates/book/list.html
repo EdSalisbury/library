@@ -1,14 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="navbar navbar-inverse navbar-fixed-bottom">
-    <div class='navbar-inner' style='padding-top: 5px; padding-right: 10px'>
-        <div class='pull-right'>
-            <a class="btn btn-small btn-primary" href="/books/add"><i class="icon-plus icon-white"></i> Add</a>
-            <a class="btn btn-small btn-primary" href="/books/mass_add"><i class="icon-barcode icon-white"></i>&nbsp;  Mass Add</a>
-        </div>
-    </div>
-</div>
 
 <div class="container-fluid">
 
@@ -24,7 +16,7 @@
     <tbody>
     {% for book in book_list %}
         <tr>
-            <td><a href="/books/{{ book.id }}">{{ book.title }}</a></td>
+            <td><a href="/books/{{ book.id }}"><i class='icon-book'></i> {{ book.title }}</a></td>
             {% if book.series %}
                 <td>{{ book.series }}, book {{ book.series_number }}</td>
             {% else %}

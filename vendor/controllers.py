@@ -1,5 +1,8 @@
 from vendor.models import Amazon
+import logging
 from amazon.api import AmazonAPI
+
+logger = logging.getLogger(__name__)
 
 class AmazonController:
 
@@ -9,9 +12,9 @@ class AmazonController:
         self.amazon = AmazonAPI(key.access_key.encode('ascii'), key.secret_key.encode('ascii'), key.assoc_tag.encode('ascii'))
 
     def lookup(self, item_id, id_type = 'ASIN', search_index = ''):
-
         try:
-            product = self.amazon.lookup(ItemId = item_id, IdType = id_type, SearchIndex = search_index)
-            return product
+            response = self.amazon.lookup(ItemId = item_id, IdType = id_type, SearchIndex = search_index)
+            return response
+
         except:
             return None
