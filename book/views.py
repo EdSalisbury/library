@@ -14,7 +14,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def list(request):
-    book_list = Book.objects.all().order_by('title').order_by('publication_year').order_by('author__name')
+    book_list = Book.objects.all()
     return render_to_response('book/list.html', {'book_list': book_list, 'tab': 'books'})
 
 def catalog(request):
@@ -103,6 +103,7 @@ def edit(request, book_id):
         condition = get_condition_by_name(post['condition'])
         description = unicode(post['description']).encode('utf-8')
         publisher = get_publisher(post['publisher'])
+        location = unicode(post['location']).encode('utf-8')
         isbn = post['isbn']
 
         book = Book.objects.get(pk = book_id)
@@ -114,6 +115,7 @@ def edit(request, book_id):
         book.condition = condition
         book.description = description
         book.publisher = publisher
+        book.location = location
         book.isbn = isbn
 
         book.save()
@@ -136,43 +138,21 @@ def get_details(product):
 
     # Get title
     title = product.item.ItemAttributes.Title
-    title = unicode(title).encode('utf-8')
-    details['title'] = re.sub('\'', '\\\'', title)
+    details['title'] = unicode(title).encode('utf-8')
 
-    # Get/create Publisher object
-    manufacturer = product.item.ItemAttributes.Manufacturer
-    try:
-        details['publisher'] = Publisher.objects.get(name = manufacturer)
-    except Publisher.DoesNotExist:
-        details['publisher'] = Publisher.objects.create(
-            name = manufacturer
-        )
+    details['publisher'] = get_publisher(product.item.ItemAttributes.Manufacturer)
 
-    # Get/create Author object
-    author_name = product.item.ItemAttributes.Author
-    author_name = unicode(author_name).encode('utf-8')
-    author_name = re.sub('\'', '\\\'', author_name)
     try:
-        details['author'] = Author.objects.get(name = author_name)
-    except Author.DoesNotExist:
-        details['author'] = Author.objects.create(
-        name = author_name
-    )
+        details['author'] = get_author(product.item.ItemAttributes.Author)
+    except AttributeError:
+        details['author'] = get_author("Unknown")
 
-    # Get/create Format object
-    binding = product.item.ItemAttributes.Binding
-    try:
-        details['format'] = Format.objects.get(label = binding)
-    except Format.DoesNotExist:
-        details['format'] = Format.objects.create(
-            label = binding
-        )
+    details['format'] = get_binding_by_name(product.item.ItemAttributes.Binding)
 
     # Get item description
     try:
         desc = product.item.EditorialReviews[0].EditorialReview['Content']
-        desc = unicode(desc).encode('utf-8')
-        details['desc'] = re.sub('\'', '\\\'', desc)
+        details['desc'] = unicode(desc).encode('utf-8')
     except AttributeError:
         details['desc'] = ""
 
@@ -191,10 +171,10 @@ def mass_add(request):
         product = None
         added = False
 
-        if len(isbn) == 10:
-            product = amazon.lookup(isbn)
-        elif len(isbn) == 13:
-            product = amazon.lookup(isbn, 'ISBN', 'Books')
+        #if len(isbn) == 10:
+            #product = amazon.lookup(isbn)
+        #elif len(isbn) == 13:
+        product = amazon.lookup(isbn, 'ISBN', 'Books')
 
         if product:
             if type(product) is ListType:
@@ -204,14 +184,20 @@ def mass_add(request):
                 product_list.append(product)
 
             for product in product_list:
-                try:
-                    product.item.LargeImage['URL']
-                except AttributeError:
-                    continue
+                if len(product_list) > 1:
+                    try:
+                        product.item.LargeImage['URL']
+                    except AttributeError:
+                        continue
 
-                details = get_details(product)
-                if not details['desc']:
-                    continue
+                    details = get_details(product)
+                    if not details['author']:
+                        continue
+                    if not details['desc']:
+                        continue
+
+                else:
+                    details = get_details(product)
 
                 book = Book.objects.create(
                     title = details['title'],

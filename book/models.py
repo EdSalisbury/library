@@ -50,3 +50,5 @@ class Book(models.Model):
     def __unicode__(self):
         return self.title
 
+    class Meta:
+        ordering = ['author__name', 'series__name', 'series_number', 'title']
