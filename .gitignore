@@ -4,6 +4,7 @@ File types #
 *.swo
 *.swp
 *.swn
+._*
 
 # Directories #
 ###############
