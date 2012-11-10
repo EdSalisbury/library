@@ -117,6 +117,17 @@ $.ajaxSetup({
             });
         });
 
+        $("#edit_btn").click(function(e)
+        {
+            $user = {{ user.username }}
+
+            if (!$user)
+            {
+                $("#login").modal("toggle");
+            }
+
+        });
+
         $("#logout_btn").click(function(e)
         {
             $.ajax(

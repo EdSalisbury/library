@@ -122,6 +122,7 @@ def edit(request, book_id):
         book.description = description
         book.publisher = publisher
         book.location = location
+        book.updated_by = request.user
         book.isbn = isbn
 
         book.save()
@@ -152,6 +153,7 @@ def add(request):
         publisher = get_publisher(post['publisher'])
         location = unicode(post['location']).encode('utf-8')
         isbn = post['isbn']
+        book.updated_by = request.user
         year = 0
 
         book = Book(
@@ -254,6 +256,7 @@ def mass_add(request):
                     publisher = details['publisher'],
                     publication_year = details['year'],
                     isbn = isbn,
+                    updated_by = request.user,
                     description = details['desc'],
                     )
                 if book:
