@@ -14,18 +14,23 @@ import logging
 logger = logging.getLogger(__name__)
 
 def list(request):
+    c = {}
+    c.update(csrf(request))
     book_list = Book.objects.all()
-    return render_to_response('book/list.html', {'book_list': book_list, 'tab': 'books'})
+    c['book_list'] = book_list
+    c['tab'] = "books"
+    c['user'] = request.user
+    return render_to_response('book/list.html', c)
 
 def catalog(request):
     book_list = Book.objects.all()
-    return render_to_response('book/catalog.html', {'book_list': book_list, 'tab': 'books'})
+    return render_to_response('book/catalog.html', {'book_list': book_list, 'tab': 'books', 'user': request.user})
 
 def view(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
     img_url = settings.MEDIA_URL + "book/" + str(book.id) + ".jpg"
     book.description = book.description.replace("\\'", "'")
-    return render_to_response('book/view.html', {'book': book, 'img_url': img_url, 'tab': 'books', 'action': 'view'})
+    return render_to_response('book/view.html', {'book': book, 'img_url': img_url, 'tab': 'books', 'action': 'view', 'user': request.user})
 
 def get_author(name):
     name = unicode(name).encode('utf-8')
@@ -90,6 +95,7 @@ def edit(request, book_id):
     c = {}
     c['tab'] = 'books'
     c['action'] = 'edit'
+    c['user'] = request.user
     c.update(csrf(request))
 
     if request.method == 'POST':
@@ -161,6 +167,7 @@ def get_details(product):
 def mass_add(request):
     c = {}
     c['tab'] = 'books'
+    c['user'] = request.user
     c.update(csrf(request))
 
     if request.method == 'POST':

@@ -80,3 +80,10 @@ h3
 {
     text-align: center;
 }
+
+li.user
+{
+    padding-top: 10px;
+    padding-right: 10px;
+    color: white;
+}

@@ -24,8 +24,21 @@
             <a class="brand" href="/"><i class='icon-home'></i> My Library</a>
             <form class="navbar-search pull-right" style='padding-right: 10px'>
                 <input type="text" class="search-query" placeholder="Search">
-                <a href="#login" role="button" class="btn" data-toggle="modal">Login</a>
             </form>
+            <div class="pull-right" style="padding-right: 10px">
+                <ul class="nav nav-tabs">
+                {% if user.username %}
+                    <li id="user" class="user">Logged in as {{ user.username }}</li>
+                    <li><button id="logout_btn" class="btn btn-primary">Logout</button></li>
+                    <li><button id="login_btn" class="btn btn-primary hide">Login</button></li>
+                {% else %}
+                    <li id="user" class="user">Not Logged In</li>
+                    <li><button id="login_btn" class="btn btn-primary">Login</button></li>
+                    <li><button id="logout_btn" class="btn btn-primary hide">Logout</button></li>
+                {% endif %}
+                </ul>
+
+            </div>
             <ul class="nav nav-tabs">
                 {% if tab == 'books' %}
                     <li class="active"><a href="/books"><i class='icon-book'></i> Books</a></li>
