@@ -133,7 +133,48 @@ def edit(request, book_id):
     return render_to_response('book/edit.html', c)
 
 def add(request):
-    return render_to_response('book/add.html', {'tab': 'books'})
+    c = {}
+    c['tab'] = 'books'
+    c['action'] = 'add'
+    c['user'] = request.user
+    c.update(csrf(request))
+
+    if request.method == 'POST':
+        post = request.POST
+        logger.debug(post)
+        title = unicode(post['title']).encode('utf-8')
+        author = get_author(post['author'])
+        series = get_series(post['series'])
+        series_number = post['series_number']
+        binding = get_binding_by_name(post['binding'])
+        condition = get_condition_by_name(post['condition'])
+        description = unicode(post['description']).encode('utf-8')
+        publisher = get_publisher(post['publisher'])
+        location = unicode(post['location']).encode('utf-8')
+        isbn = post['isbn']
+        year = 0
+
+        book = Book(
+            title = title,
+            author = author,
+            series = series,
+            series_number = series_number,
+            format = binding,
+            condition = condition,
+            description = description,
+            publisher = publisher,
+            publication_year = year,
+            location = location,
+            )
+
+        book.save()
+        c['added'] = True
+        c['book'] = book
+
+    c['bindings'] = Format.objects.all()
+    c['conditions'] = Condition.objects.all()
+
+    return render_to_response('book/add.html', c)
 
 def get_details(product):
 
