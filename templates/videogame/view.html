@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container well">
+    <div class="row-fluid">
+        <div class="span4">
+            {% if img_url %}
+                <img src='{{ img_url }}'>
+            {% endif %}
+        </div>
+        <div class="span8">
+            <h1>{{ videogame.title }}
+            {% if videogame.series %}
+                {% if videogame.series_number %}
+                    ({{ videogame.series.name}}, game {{ videogame.series_number }})</h1>
+                {% else %}
+                    ({{ videogame.series.name }})
+                {% endif %}
+            {% endif %}
+            </h1>
+            <h3>Developer: {{ videogame.developer.name }}</h3>
+            <h3>Media Type: {{ videogame.media_type.label }}</h3>
+            <h3>Condition: {{ videogame.condition.label }}</h3>
+            <h3>Publisher: {{ videogame.publisher.name }}</h3>
+            <h3>Location: {{ videogame.location }}</h3>
+            <h3>UPC: {{ videogame.upc }}</h3>
+            <div>
+                {% autoescape off %}
+                {{ videogame.description }}
+                {% endautoescape %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

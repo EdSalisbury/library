@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container well">
+
+{% if videogame_list %}
+    <table class="table table-striped well">
+    <thead>
+    <tr>
+        <th>Title</th>
+        <th>Series/Game</th>
+        <th>Developer</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for videogame in videogame_list %}
+        <tr>
+            <td><a href="/videogames/{{ videogame.id }}"><i class='icon-videogame'></i> {{ videogame.title }}</a></td>
+            {% if videogame.series %}
+                <td>{{ videogame.series }}, videogame {{ videogame.series_number }}</td>
+            {% else %}
+                <td>&nbsp;</td>
+            {% endif %}
+            <td>{{ videogame.developer }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+{% else %}
+    <p>No video games exist in your library.</p>
+{% endif %}
+</div>
+
+{% endblock %}
+

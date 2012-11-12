@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+
+<div class="row-fluid">
+
+{% if book_list %}
+    {% for book in book_list %}
+        <div class='span3'>
+            <a href="/book/{{ book.id }}/"><img src="/media/book/{{ book.id }}.jpg" /></a>
+        </div>
+    {% endfor %}
+    </tbody>
+{% else %}
+    <p>No books exist in your library.</p>
+{% endif %}
+</div>
+</div>
+
+{% endblock %}
+

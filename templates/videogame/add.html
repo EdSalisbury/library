@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container well">
+    <form class="form" action="/videogames/add" method="POST">
+        {% csrf_token %}
+        <div class="controls controls-row">
+            <label class="control-label span1" for="title">Title:</label>
+            <div class="controls span4">
+                <input class="input-xlarge" type="text" id="title" name="title" value="{{videogame.title}}">
+            </div>
+        </div>
+        <div class="controls controls-row">
+            <label class="control-label span1" for="developer">Developer:</label>
+            <div class="controls span4">
+                <input type="text" id="developer" name="developer" value="{{videogame.developer.name}}">
+            </div>
+        </div>
+        <div class="controls controls-row">
+            <label class="control-label span1" for="series">Series:</label>
+            <div class="controls span3">
+                <input type="text" id="series" name="series" value="{{videogame.series.name}}">
+            </div>
+            <label class="control-label span1" for="series_number">Game #:</label>
+            <div class="controls span1">
+                <input class="input-mini" type="text" id="series_number" name="series_number" value="{{videogame.series_number}}">
+            </div>
+        </div>
+        <div class="controls controls-row">
+            <label class="control-label span1" for="platform">Platform:</label>
+            <div class="controls span4">
+                <select id="platform" name="platform">
+                    {% for label in platforms %}
+                        {% if videogame.platform.id == forloop.counter %}
+                            <option selected="selected" name="{{forloop.counter}}">{{label}}</option>
+                        {% else %}
+                            <option name="{{forloop.counter}}">{{label}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+
+        <div class="controls controls-row">
+            <label class="control-label span1" for="media_type">Media Type:</label>
+            <div class="controls span4">
+                <select id="media_type" name="media_type">
+                    {% for label in media_types %}
+                        {% if videogame.media_type.id == forloop.counter %}
+                            <option selected="selected" name="{{forloop.counter}}">{{label}}</option>
+                        {% else %}
+                            <option name="{{forloop.counter}}">{{label}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="controls controls-row">
+            <label class="control-label span1" for="condition">Condition:</label>
+            <div class="controls span4">
+                <select id="condition" name="condition">
+                    {% for label in conditions %}
+                        {% if videogame.condition.id == forloop.counter %}
+                            <option selected="selected" name="{{forloop.counter}}">{{label}}</option>
+                        {% else %}
+                            <option name='{{forloop.counter}}'>{{label}}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="controls controls-row">
+            <label class="control-label span1" for="publisher">Publisher:</label>
+            <div class="controls span4">
+                <input class="input-xlarge" type="text" id="publisher" name="publisher" value="{{videogame.publisher.name}}">
+            </div>
+        </div>
+        <div class="controls controls-row">
+            <label class="control-label span1" for="upc">UPC:</label>
+            <div class="controls span4">
+                <input class="input-small" type="text" id="upc" name="upc" value="{{videogame.upc}}">
+            </div>
+        </div>
+        <div class="controls controls-row">
+            <label class="control-label span1" for="location">Location:</label>
+            <div class="controls span4">
+                <input class="input-mini" type="text" id="location" name="location" value="{{videogame.location}}">
+            </div>
+        </div>
+        <div class="controls controls-row">
+            <label class="control-label span12" for="description">Description:</label>
+            <div class="controls span12">
+                <textarea class="span11" rows="6" cols="80" id="description" name="description">{{videogame.description}}</textarea>
+            </div>
+        </div>
+        <div class="form-actions">
+            {% if added %}
+                <p><a href="/videogames/{{ videogame.id }}">{{ videogame.title }}</a> has been added successfully.</p>
+            {% endif %}
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <button type="button" class="btn" onClick="parent.location='/videogames'">Cancel</button>
+        </div>
+    </form>
+
+</div>
+
+{% endblock %}

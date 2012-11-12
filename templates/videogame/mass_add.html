@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class='container'>
+
+<form class="well form-inline" action="/videogames/mass_add" method="post">
+    {% csrf_token %}
+    <legend>Mass Add Video Games</legend>
+    <label>UPC #:</label>
+    <input type="text" name="upc" autofocus="autofocus" />
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+{% if videogame %}
+    <p><a href="/videogames/{{ videogame.id }}">{{ videogame.title }}</a> by {{ videogame.developer.name }} has been added successfully.</p>
+{% endif %}
+
+{% if error %}
+    <p>{{ error }}</p>
+{% endif %}
+</div>
+
+
+{% endblock %}
+

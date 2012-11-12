@@ -45,6 +45,13 @@
                 {% else %}
                     <li><a href="/books"><i class='icon-book'></i> Books</a></li>
                 {% endif %}
+
+                {% if tab == 'videogames' %}
+                    <li class="active"><a href="/videogames"><i class='icon-play-circle'></i> Video Games</a></li>
+                {% else %}
+                    <li><a href="/videogames"><i class='icon-play-circle'></i> Video Games</a></li>
+                {% endif %}
+
             </ul>
         </div>
     </div>
@@ -62,6 +69,24 @@
 
                     <a class="btn btn-small btn-primary" href="/books/add"><i class="icon-plus icon-white"></i> Add</a>
                     <a class="btn btn-small btn-primary" href="/books/mass_add"><i class="icon-barcode icon-white"></i>&nbsp;  Mass Add</a>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    {% if tab == 'videogames' %}
+        <div class="navbar navbar-inverse navbar-fixed-bottom">
+            <div class='navbar-inner' style='padding-top: 5px; padding-right: 10px'>
+                <div class='pull-right'>
+                    {% if action == "view" %}
+                        <a class="btn btn-small btn-primary" href="/videogames/{{ videogame.id }}/edit"><i class="icon-edit icon-white"></i> Edit</a>
+                    {% endif %}
+                    {% if action == "edit" %}
+                        <a class="btn btn-small btn-primary" href="/videogames/{{ videogame.id }}"><i class="icon-eye-open icon-white"></i> View</a>
+                    {% endif %}
+
+                    <a class="btn btn-small btn-primary" href="/videogames/add"><i class="icon-plus icon-white"></i> Add</a>
+                    <a class="btn btn-small btn-primary" href="/videogames/mass_add"><i class="icon-barcode icon-white"></i>&nbsp;  Mass Add</a>
                 </div>
             </div>
         </div>

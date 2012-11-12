@@ -2,7 +2,7 @@ from django.core.context_processors import csrf
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpRequest
 from django.conf import settings
-from book.models import *
+from videogame.models import *
 from vendor.controllers import AmazonController
 import urllib
 import HTMLParser
@@ -16,29 +16,29 @@ logger = logging.getLogger(__name__)
 def list(request):
     c = {}
     c.update(csrf(request))
-    book_list = Book.objects.all()
-    c['book_list'] = book_list
-    c['tab'] = "books"
+    videogame_list = VideoGame.objects.all()
+    c['videogame_list'] = videogame_list
+    c['tab'] = "videogames"
     c['user'] = request.user
-    return render_to_response('book/list.html', c)
+    return render_to_response('videogame/list.html', c)
 
 def catalog(request):
-    book_list = Book.objects.all()
-    return render_to_response('book/catalog.html', {'book_list': book_list, 'tab': 'books', 'user': request.user})
+    videogame_list = VideoGame.objects.all()
+    return render_to_response('videogame/catalog.html', {'videogame_list': videogame_list, 'tab': 'videogames', 'user': request.user})
 
-def view(request, book_id):
-    book = get_object_or_404(Book, pk=book_id)
-    img_url = settings.MEDIA_URL + "book/" + str(book.id) + ".jpg"
-    book.description = book.description.replace("\\'", "'")
-    return render_to_response('book/view.html', {'book': book, 'img_url': img_url, 'tab': 'books', 'action': 'view', 'user': request.user})
+def view(request, videogame_id):
+    videogame = get_object_or_404(VideoGame, pk=videogame_id)
+    img_url = settings.MEDIA_URL + "videogame/" + str(videogame.id) + ".jpg"
+    videogame.description = videogame.description.replace("\\'", "'")
+    return render_to_response('videogame/view.html', {'videogame': videogame, 'img_url': img_url, 'tab': 'videogames', 'action': 'view', 'user': request.user})
 
-def get_author(name):
+def get_developer(name):
     name = unicode(name).encode('utf-8')
     try:
-        author = Author.objects.get(name = name)
-    except Author.DoesNotExist:
-        author = Author.objects.create(name = name)
-    return author
+        developer = Developer.objects.get(name = name)
+    except Developer.DoesNotExist:
+        developer = Developer.objects.create(name = name)
+    return developer
 
 def get_publisher(name):
     name = unicode(name).encode('utf-8')
@@ -58,22 +58,30 @@ def get_series(name):
         series = Series.objects.create(name = name)
     return series
 
-def get_binding_by_id(binding_id):
-    binding = None
+def get_media_type_by_id(media_type_id):
+    media_type = None
     try:
-        binding = Format.objects.get(pk = binding_id)
-    except Format.DoesNotExist:
+        media_type = MediaType.objects.get(pk = media_type_id)
+    except MediaType.DoesNotExist:
         pass
 
-    return binding
+    return media_type
 
-def get_binding_by_name(name):
+def get_media_type_by_name(name):
     name = unicode(name).encode('utf-8')
     try:
-        binding = Format.objects.get(label = name)
-    except Format.DoesNotExist:
-        binding = Format.objects.create(label = name)
-    return binding
+        media_type = MediaType.objects.get(label = name)
+    except MediaType.DoesNotExist:
+        media_type = MediaType.objects.create(label = name)
+    return media_type
+
+def get_platform_by_name(name):
+    name = unicode(name).encode('utf-8')
+    try:
+        platform = Platform.objects.get(name = name)
+    except Platform.DoesNotExist:
+        platform = Platform.objects.create(name = name)
+    return platform
 
 def get_condition_by_id(condition_id):
     condition = None
@@ -91,9 +99,9 @@ def get_condition_by_name(name):
         condition = Condition.objects.create(label = name)
     return condition
 
-def edit(request, book_id):
+def edit(request, videogame_id):
     c = {}
-    c['tab'] = 'books'
+    c['tab'] = 'videogames'
     c['action'] = 'edit'
     c['user'] = request.user
     c.update(csrf(request))
@@ -102,40 +110,43 @@ def edit(request, book_id):
         post = request.POST
         logger.debug(post)
         title = unicode(post['title']).encode('utf-8')
-        author = get_author(post['author'])
+        developer = get_developer(post['developer'])
         series = get_series(post['series'])
         series_number = post['series_number']
-        binding = get_binding_by_name(post['binding'])
+        media_type = get_media_type_by_name(post['media_type'])
+        platform = get_platform_by_name(post['platform'])
         condition = get_condition_by_name(post['condition'])
         description = unicode(post['description']).encode('utf-8')
         publisher = get_publisher(post['publisher'])
         location = unicode(post['location']).encode('utf-8')
-        isbn = post['isbn']
+        upc = post['upc']
 
-        book = Book.objects.get(pk = book_id)
-        book.title = title
-        book.author = author
-        book.series = series
-        book.series_number = series_number
-        book.format = binding
-        book.condition = condition
-        book.description = description
-        book.publisher = publisher
-        book.location = location
-        book.updated_by = request.user
-        book.isbn = isbn
+        videogame = VideoGame.objects.get(pk = videogame_id)
+        videogame.title = title
+        videogame.developer = developer
+        videogame.series = series
+        videogame.series_number = series_number
+        videogame.media_type = media_type
+        videogame.condition = condition
+        videogame.description = description
+        videogame.publisher = publisher
+        videogame.platform = platform
+        videogame.location = location
+        videogame.updated_by = request.user
+        videogame.upc = upc
 
-        book.save()
+        videogame.save()
         c['updated'] = True
 
-    c['book'] = get_object_or_404(Book, pk=book_id)
-    c['bindings'] = Format.objects.all()
+    c['videogame'] = get_object_or_404(VideoGame, pk=videogame_id)
+    c['media_types'] = MediaType.objects.all()
+    c['platforms'] = Platform.objects.all()
     c['conditions'] = Condition.objects.all()
-    return render_to_response('book/edit.html', c)
+    return render_to_response('videogame/edit.html', c)
 
 def add(request):
     c = {}
-    c['tab'] = 'books'
+    c['tab'] = 'videogames'
     c['action'] = 'add'
     c['user'] = request.user
     c.update(csrf(request))
@@ -144,24 +155,26 @@ def add(request):
         post = request.POST
         logger.debug(post)
         title = unicode(post['title']).encode('utf-8')
-        author = get_author(post['author'])
+        developer = get_developer(post['developer'])
         series = get_series(post['series'])
         series_number = post['series_number']
-        binding = get_binding_by_name(post['binding'])
+        platform = get_platform_by_name(post['platform'])
+        media_type = get_media_type_by_name(post['media_type'])
         condition = get_condition_by_name(post['condition'])
         description = unicode(post['description']).encode('utf-8')
         publisher = get_publisher(post['publisher'])
         location = unicode(post['location']).encode('utf-8')
-        isbn = post['isbn']
+        upc = post['upc']
         year = 0
 
-        book = Book(
+        videogame = VideoGame(
             title = title,
-            author = author,
+            developer = developer,
             series = series,
             series_number = series_number,
-            format = binding,
+            media_type = media_type,
             condition = condition,
+            platform = platform,
             description = description,
             publisher = publisher,
             publication_year = year,
@@ -169,21 +182,22 @@ def add(request):
             location = location,
             )
 
-        book.save()
+        videogame.save()
         c['added'] = True
-        c['book'] = book
+        c['videogame'] = videogame
 
-    c['bindings'] = Format.objects.all()
+    c['platforms'] = Platform.objects.all()
+    c['media_types'] = MediaType.objects.all()
     c['conditions'] = Condition.objects.all()
 
-    return render_to_response('book/add.html', c)
+    return render_to_response('videogame/add.html', c)
 
 def get_details(product):
 
     details = {}
 
     # Get publication year
-    details['year'] = str(product.item.ItemAttributes.PublicationDate)[:4]
+    details['year'] = str(product.item.ItemAttributes.ReleaseDate)[:4]
 
     # Get title
     title = product.item.ItemAttributes.Title
@@ -192,11 +206,12 @@ def get_details(product):
     details['publisher'] = get_publisher(product.item.ItemAttributes.Manufacturer)
 
     try:
-        details['author'] = get_author(product.item.ItemAttributes.Author)
+        details['developer'] = get_developer(product.item.ItemAttributes.Studio)
     except AttributeError:
-        details['author'] = get_author("Unknown")
+        details['developer'] = get_developer("Unknown")
 
-    details['format'] = get_binding_by_name(product.item.ItemAttributes.Binding)
+    details['media_type'] = get_media_type_by_name(product.item.ItemAttributes.Binding)
+    details['platform'] = get_platform_by_name(product.item.ItemAttributes.Platform)
 
     # Get item description
     try:
@@ -209,22 +224,22 @@ def get_details(product):
 
 def mass_add(request):
     c = {}
-    c['tab'] = 'books'
+    c['tab'] = 'videogames'
     c['user'] = request.user
     c.update(csrf(request))
 
     if request.method == 'POST':
         post = request.POST
-        isbn = post['isbn']
+        upc = post['upc']
         amazon = AmazonController()
 
         product = None
         added = False
 
-        #if len(isbn) == 10:
-            #product = amazon.lookup(isbn)
-        #elif len(isbn) == 13:
-        product = amazon.lookup(isbn, 'ISBN', 'Books')
+        if post['upc'][:1].isdigit():
+            product = amazon.lookup("0" + upc, "EAN", "Blended")
+        else:
+            product = amazon.lookup(upc, "ASIN")
 
         if product:
             if type(product) is ListType:
@@ -241,7 +256,7 @@ def mass_add(request):
                         continue
 
                     details = get_details(product)
-                    if not details['author']:
+                    if not details['developer']:
                         continue
                     if not details['desc']:
                         continue
@@ -249,30 +264,31 @@ def mass_add(request):
                 else:
                     details = get_details(product)
 
-                book = Book.objects.create(
+                videogame = VideoGame.objects.create(
                     title = details['title'],
-                    author = details['author'],
-                    format = details['format'],
+                    developer = details['developer'],
+                    media_type = details['media_type'],
+                    platform = details['platform'],
                     publisher = details['publisher'],
                     publication_year = details['year'],
-                    isbn = isbn,
+                    upc = upc,
                     updated_by = request.user,
                     description = details['desc'],
                     )
-                if book:
+                if videogame:
                     added = True
 
                 # Get image
                 try:
                     image_url = str(product.item.LargeImage['URL'])
-                    urllib.urlretrieve(image_url, settings.MEDIA_ROOT + "/book/" + str(book.id) + ".jpg")
+                    urllib.urlretrieve(image_url, settings.MEDIA_ROOT + "/videogame/" + str(videogame.id) + ".jpg")
                 except AttributeError:
                     pass
 
-                c['book'] = book
-                return render_to_response('book/mass_add.html', c)
+                c['videogame'] = videogame
+                return render_to_response('videogame/mass_add.html', c)
 
         else:
-            c['error'] = "Unable to find ISBN %s." % (isbn)
+            c['error'] = "Unable to find UPC %s." % (upc)
 
-    return render_to_response('book/mass_add.html', c)
+    return render_to_response('videogame/mass_add.html', c)
